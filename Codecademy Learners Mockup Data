@@ -1,0 +1,75 @@
+SELECT DISTINCT email_domain, COUNT(*) FROM users
+GROUP BY  email_domain
+ORDER BY COUNT(*) DESC
+LIMIT 5;
+
+SELECT sign_up_at,
+   strftime('%S', sign_up_at)
+FROM users
+GROUP BY 1
+LIMIT 5;
+
+CREATE TABLE mockup AS
+SELECT *
+FROM users u
+LEFT JOIN progress p
+using(user_id)
+GROUP BY 1
+ORDER BY 1;
+
+SELECT * FROM mockup
+LIMIT 5;
+
+WITH cpp AS (
+SELECT email_domain,  COUNT(user_id) AS cpp_learner FROM mockup
+WHERE learn_cpp = 'completed' OR learn_cpp = 'started'
+GROUP BY email_domain
+),
+
+ sql AS (
+SELECT email_domain,  COUNT(user_id) AS sql_learner FROM mockup
+WHERE learn_sql = 'completed' OR learn_sql = 'started'
+GROUP BY email_domain
+),
+
+  html AS (
+SELECT email_domain,  COUNT(user_id) AS html_learner FROM mockup
+WHERE learn_html = 'completed' OR learn_html = 'started'
+
+),
+
+  java AS (
+SELECT email_domain,  COUNT(user_id) AS java_learner FROM mockup
+WHERE learn_java = 'completed' OR learn_java = 'started'
+
+),
+
+  javascript AS (
+SELECT email_domain,  COUNT(user_id) AS javascript_learner FROM mockup
+WHERE learn_javascript = 'completed' OR learn_javascript = 'started'
+
+)
+
+SELECT * FROM mockup LEFT JOIN cpp using(email_domain)
+LEFT JOIN sql
+using(email_domain)
+  LEFT JOIN html
+  using(email_domain)
+    LEFT JOIN java
+    using(email_domain)
+      LEFT JOIN javascript
+      using(email_domain)
+WHERE city = 'Chicago'
+GROUP BY email_domain 
+ORDER BY sql_learner DESC
+
+LIMIT 5
+
+
+
+
+
+
+
+
+
